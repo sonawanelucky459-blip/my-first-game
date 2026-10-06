@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Discrete Math Quest - Epic Edition</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="topbar">
+        <div class="logo">⚔️ Discrete Math Quest</div>
+        <div class="stats">
+            <div class="stat">🏅 Lvl <span id="level">1</span> <span id="rankTitle" class="badge">Beginner</span> (<span id="xp">0</span> XP)</div>
+            <div class="stat">⭐ <span id="score">0</span></div>
+            <div class="stat">❤️ <span id="hp">3</span></div>
+            <div class="stat">💎 <span id="coins">0</span></div>
+            <button class="shop-btn" onclick="toggleShop()">🛒 Shop</button>
+        </div>
+    </header>
+
+    <!-- Shop Modal -->
+    <div id="shopModal" class="modal hidden">
+        <div class="modal-content">
+            <h2>🛒 Math Shop</h2>
+            <p>Spend your coins to get advantages in your quest!</p>
+            <div class="shop-items">
+                <div class="shop-item">
+                    <span>❤️ Extra Life</span>
+                    <button onclick="buyItem('life', 50)">50 💎</button>
+                </div>
+                <div class="shop-item">
+                    <span>⏳ +20s Time Boost</span>
+                    <button onclick="buyItem('time', 30)">30 💎</button>
+                </div>
+                <div class="shop-item">
+                    <span>⏭️ Skip Question</span>
+                    <button onclick="buyItem('skip', 100)">100 💎</button>
+                </div>
+            </div>
+            <button class="primary-btn close-shop" onclick="toggleShop()">Close Shop</button>
+        </div>
+    </div>
+
+    <!-- Start Screen -->
+    <section id="startScreen" class="screen">
+        <div class="start-card">
+            <div class="game-icon">∑</div>
+            <h1>Discrete Math Quest</h1>
+            <p class="subtitle">Defeat Math Bosses, level up, and master the realm!</p>
+            <button class="primary-btn large-btn" onclick="startGame()">START ADVENTURE</button>
+        </div>
+    </section>
+
+    <!-- Map Screen -->
+    <section id="mapScreen" class="screen hidden">
+        <div class="map-header">
+            <h2>🗺️ The Math Realm</h2>
+            <p>Follow the path and defeat the bosses to reach the Final Encounter.</p>
+        </div>
+        <div class="map-path-container">
+            <div class="map-node" id="node0" onclick="enterWorld(0)">
+                <span class="node-icon">🧠</span>
+                <span class="node-label">Logic Castle</span>
+            </div>
+            <div class="map-line"></div>
+            <div class="map-node" id="node1" onclick="enterWorld(1)">
+                <span class="node-icon">🔵</span>
+                <span class="node-label">Set Forest</span>
+            </div>
+            <div class="map-line"></div>
+            <div class="map-node" id="node2" onclick="enterWorld(2)">
+                <span class="node-icon">🔗</span>
+                <span class="node-label">Relation Ruins</span>
+            </div>
+            <div class="map-line"></div>
+            <div class="map-node" id="node3" onclick="enterWorld(3)">
+                <span class="node-icon">🎲</span>
+                <span class="node-label">Combo Mine</span>
+            </div>
+            <div class="map-line"></div>
+            <div class="map-node" id="node4" onclick="enterWorld(4)">
+                <span class="node-icon">🕸️</span>
+                <span class="node-label">Graph Tower</span>
+            </div>
+            <div class="map-line"></div>
+            <div class="map-node final-boss-node" id="node5" onclick="enterWorld(5)">
+                <span class="node-icon">😈</span>
+                <span class="node-label">FINAL BOSS</span>
+            </div>
+        </div>
+        
+        <!-- Player Avatar (Moves around nodes) -->
+        <div id="playerAvatar" class="player-avatar">🏃</div>
+    </section>
+
+    <!-- Game Screen -->
+    <section id="gameScreen" class="screen hidden">
+        <div class="game-header">
+            <div>
+                <span id="worldBadge">WORLD 1</span>
+                <h2 id="worldTitle">Logic Castle</h2>
+            </div>
+            <div class="timer">⏱️ <span id="timer">30</span>s</div>
+        </div>
+        
+        <!-- Boss HUD -->
+        <div class="boss-hud hidden" id="bossHud">
+            <div class="boss-icon" id="bossIcon">🧛</div>
+            <div class="boss-details">
+                <div class="boss-name" id="bossName">Lord Logic</div>
+                <div class="boss-hp-bar-bg">
+                    <div id="bossHpFill" class="boss-hp-fill"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="progress-container"><div id="progressBar"></div></div>
+        
+        <div class="mission-card">
+            <div class="combo-meter hidden" id="comboMeter">🔥 COMBO x<span id="comboValue">1</span>!</div>
+            <div class="mission-number" id="questionNumber">Question 1</div>
+            
+            <h2 id="questionText"></h2>
+            
+            <!-- Dynamic Input Area -->
+            <div id="questionArea" class="question-area"></div>
+            
+            <div class="action-buttons">
+                <button id="hintBtn" onclick="useHint()" class="hint-btn">💡 Hint (20 💎)</button>
+            </div>
+            
+            <div id="feedback" class="feedback hidden"></div>
+            
+            <button id="nextBtn" class="primary-btn" onclick="nextQuestion()" disabled>Continue ➡️</button>
+        </div>
+    </section>
+
+    <!-- Dashboard Screen -->
+    <section id="dashboardScreen" class="screen hidden">
+        <div class="dashboard-card">
+            <div class="trophy">🏆</div>
+            <h1>Quest Complete!</h1>
+            
+            <div class="dash-grid">
+                <div class="dash-item"><span>Total Score</span><strong id="dashScore">0</strong></div>
+                <div class="dash-item"><span>Final Rank</span><strong id="dashRank" class="highlight-text">Beginner</strong></div>
+                <div class="dash-item"><span>Correct Answers</span><strong id="dashCorrect">0</strong></div>
+                <div class="dash-item"><span>Wrong Answers</span><strong id="dashWrong">0</strong></div>
+                <div class="dash-item"><span>Accuracy</span><strong id="dashAcc">0%</strong></div>
+                <div class="dash-item"><span>Time Taken</span><strong id="dashTime">0s</strong></div>
+                <div class="dash-item"><span>Worlds Cleared</span><strong id="dashWorlds">0/6</strong></div>
+                <div class="dash-item"><span>Max Combo</span><strong id="dashCombo">0</strong></div>
+            </div>
+            
+            <button class="primary-btn large-btn" onclick="restartGame()">PLAY AGAIN</button>
+        </div>
+    </section>
+
+    <script src="script.js"></script>
+</body>
+</html>
